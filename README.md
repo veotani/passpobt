@@ -28,6 +28,7 @@ Create a `.env` file as per the provided example. You will need Google credentia
 - `TELEGRAM_BOT_TOKEN` - Create a Telegram bot in BotFather
 - `TELEGRAM_CHAT_ID` - ID of the chat between you and the bot
 - `CREDENTIALS_PATH` - The file you download by following Google's guide
+- `GOOGLE_AUTH_HOST` (optional) - Host to temporary run server for Gmail authorization
 - `GOOGLE_AUTH_PORT` (optional) - Port to temporary run server for Gmail authorization
 
 To verify everything works, you can run tests. They send you a Telegram message to confirm everything is properly set up
