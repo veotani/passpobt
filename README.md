@@ -6,7 +6,7 @@ midpass. It reminds you to approve your application whenever possible. The only 
 ## Problem
 
 For Russian citizens, there is a website that allows you to apply for documents while abroad. The system is peculiar:
-you must check in daily to show you're still in queue for the desired document. 
+you must check in daily to show you're still in queue for the desired document.
 
 The website uses CAPTCHA to prevent software log-ins and sometimes changes your password. This, and the uncertainty of
 the process when it's my turn to retrieve the documents, led me to conclude that making this fully autonomous would take
@@ -25,9 +25,9 @@ To help remember to do this, the bot sends a notification 24 hours after my last
 Create a `.env` file as per the provided example. You will need Google credentials, so please follow
 [this guide](https://developers.google.com/gmail/api/quickstart/python#set_up_your_environment) to get them.
 
-- `TELEGRAM_BOT_TOKEN` -- Create a Telegram bot in BotFather
-- `TELEGRAM_CHAT_ID` -- ID of the chat between you and the bot
-- `CREDENTIALS_PATH` -- The file you download by following Google's guide
+- `TELEGRAM_BOT_TOKEN` - Create a Telegram bot in BotFather
+- `TELEGRAM_CHAT_ID` - ID of the chat between you and the bot
+- `CREDENTIALS_PATH` - The file you download by following Google's guide
 
 To verify everything works, you can run tests. They send you a Telegram message to confirm everything is properly set up
 on the Telegram side with your parameters.
