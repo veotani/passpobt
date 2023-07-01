@@ -1,0 +1,8 @@
+**/credentials.json
+**/venv
+**/*.egg-info
+**/.env
+**/__pycache__
+**/token.json
+**/.mypy_cache
+**/.pytest_cache
