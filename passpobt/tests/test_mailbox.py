@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from passpobt import mailbox
 
 
@@ -9,6 +11,6 @@ def test_authorize():
 
 def test_get_latest_notification_timestamp():
     """Test if notification timestamp is within last 24hr."""
-    since_last_notification = mailbox.last_trigger_message_time()
-    if since_last_notification:
-        assert since_last_notification >= 0
+    t = mailbox.last_trigger_message_time()
+    if t:
+        assert t <= datetime.now().astimezone(t.tzinfo)

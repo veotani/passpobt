@@ -21,20 +21,20 @@ async def test_message_per_trigger(monkeypatch):
     class EnoughCycles(BaseException):
         """Raised when bot has run for too long."""
 
-    async def _message_counter(*args, **kwargs):
+    async def message_counter(*args, **kwargs):
         nonlocal messages_sent
         messages_sent += 1
 
-    def _get_last_trigger_message_time():
+    def get_last_trigger_message_time():
         nonlocal trigger_time_requests
         trigger_time_requests += 1
         if trigger_time_requests > 5:
             raise EnoughCycles()
         return datetime.fromtimestamp(0)
 
-    monkeypatch.setattr(mailbox, 'last_trigger_message_time', _get_last_trigger_message_time)
+    monkeypatch.setattr(mailbox, 'last_trigger_message_time', get_last_trigger_message_time)
     monkeypatch.setattr(bot, 'LOOP_DELAY', 0)
-    monkeypatch.setattr(TelegramBot, 'send_notification', _message_counter)
+    monkeypatch.setattr(TelegramBot, 'send_notification', message_counter)
     notifications_bot = NotificationsBot()
     bot_task = asyncio.create_task(notifications_bot.run())
     with pytest.raises(EnoughCycles):
@@ -53,49 +53,47 @@ async def test_several_days(monkeypatch):
     expected_days = 365
     mailbox_checks_per_day = 10
 
-    async def _message_counter(*args, **kwargs):
+    async def message_counter(*args, **kwargs):
         nonlocal messages_sent
         messages_sent += 1
 
     class Apocalypse(BaseException):
         """Time has run out and we are all doomed."""
 
-    def each_10_checks_day_passes():
-        """Every 10 checks a day passes."""
+    def trigger_message_schedule():
         t = 0
         nonlocal days_passed
         while days_passed < expected_days:
             for _ in range(mailbox_checks_per_day):
-                yield datetime.fromtimestamp(t)
+                yield t
             t += DAY
             days_passed += 1
 
-    triggers_schedule = each_10_checks_day_passes()
+    get_last_trigger_message_time_schedule = trigger_message_schedule()
 
-    def _get_last_trigger_message_time():
+    def get_last_trigger_message_time():
         nonlocal trigger_time_requests
         trigger_time_requests += 1
         try:
-            return next(triggers_schedule)
+            return datetime.fromtimestamp(next(get_last_trigger_message_time_schedule))
         except StopIteration as ex:
             raise Apocalypse() from ex
 
-    def each_day():
-        """Between each call of the `datetime.now` there is 5 minutes of virtual time."""
+    def now_schedule():
         t = 0
         while True:
             yield t
             t += DAY
 
-    now_schedule = each_day()
+    get_current_time_schedule = now_schedule()
 
-    def virtual_time(*args, **kwargs):
-        return next(now_schedule)
+    def get_current_time(*args, **kwargs):
+        return next(get_current_time_schedule)
 
-    monkeypatch.setattr(mailbox, 'last_trigger_message_time', _get_last_trigger_message_time)
+    monkeypatch.setattr(mailbox, 'last_trigger_message_time', get_last_trigger_message_time)
     monkeypatch.setattr(bot, 'LOOP_DELAY', 0)
-    monkeypatch.setattr(TelegramBot, 'send_notification', _message_counter)
-    monkeypatch.setattr(time, 'time', virtual_time)
+    monkeypatch.setattr(TelegramBot, 'send_notification', message_counter)
+    monkeypatch.setattr(time, 'time', get_current_time)
     notifications_bot = NotificationsBot()
     bot_task = asyncio.create_task(notifications_bot.run())
     with pytest.raises(Apocalypse):
