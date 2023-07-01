@@ -20,7 +20,7 @@ def authorize() -> Credentials:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(os.getenv('CREDENTIALS_PATH'), SCOPES)
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_local_server(port=os.getenv("GOOGLE_AUTH_PORT") or 8080)
         with open('token.json', 'w', encoding='utf8') as token:
             token.write(creds.to_json())
     return creds
