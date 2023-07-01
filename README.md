@@ -33,3 +33,16 @@ Create a `.env` file as per the provided example. You will need Google credentia
 
 To verify everything works, you can run tests. They send you a Telegram message to confirm everything is properly set up
 on the Telegram side with your parameters.
+
+## Authorization
+
+Since you are not insane you will likely want to run this bot on the remote server. In order to authenticate, there is
+going to be deployed a simple server. It has to be localhost or serve over https. I haven't quickly figured out how to
+do it so here is how I've overcome this.
+
+You have to forward traffic from the remote port to your local port. So that when you go to "localhost:xxxx" in your
+browser you are actually visiting "localhost:xxxx" of your server. In order to do so you need to run:
+
+```
+ssh -L 8080:localhost:8080 user@remote.server
+```
